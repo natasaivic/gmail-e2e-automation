@@ -32,10 +32,31 @@ This project uses **Playwright** for browser automation and **pytest** for test 
 - **Reporting**: HTML reports with screenshots and detailed logs
 - **Configuration**: Environment-based setup with flexible modes
 
-### Future Considerations
-- **Authentication**: Gmail login will require handling OAuth2 or app-specific passwords
-- **Email Verification**: May need integration with email APIs or IMAP for receipt verification
-- **Test Data Management**: Use pytest fixtures for test accounts and email data management
+### Test Strategy & Architecture
+
+**Hybrid Testing Approach**: The project uses both dedicated authentication tests and integrated workflow tests for comprehensive coverage.
+
+#### 1. Dedicated Authentication Tests
+- **Purpose**: Isolate login functionality for focused testing and debugging
+- **Coverage**: OAuth2, 2FA, app passwords, invalid credentials, session persistence
+- **Benefits**: Fast feedback, clear error isolation, comprehensive edge case testing
+- **Test File**: `tests/test_login.py` (planned)
+
+#### 2. Integrated Workflow Tests  
+- **Purpose**: Test realistic user scenarios with login as prerequisite
+- **Coverage**: Complete user journeys from login through email operations
+- **Benefits**: Real-world validation, performance testing, user experience validation
+- **Test Files**: `tests/test_email_*.py` (planned)
+
+#### 3. Shared Authentication Fixtures
+- **Purpose**: Reusable login utilities across all test suites
+- **Implementation**: `tests/fixtures/auth_fixtures.py` (planned)
+- **Features**: Pre-authenticated pages, login page setup, session management
+
+### Future Implementation Considerations
+- **Authentication**: Gmail login handling OAuth2, 2FA, and app-specific passwords
+- **Email Verification**: Integration with email APIs or IMAP for receipt verification
+- **Test Data Management**: Pytest fixtures for test accounts and email data management
 - **Page Object Model**: Implement page objects for maintainable test code
 - **Parallel Execution**: Leverage pytest-xdist for parallel test execution (use headless mode)
 - **CI/CD Integration**: Design tests to run reliably in automated environments
@@ -56,8 +77,14 @@ gmail-e2e-automation/
 ├── videos/                  # Test videos (if enabled)
 └── tests/                  # Test files
     ├── conftest.py         # Playwright fixtures and configuration
-    ├── page_objects/       # Page object models (for future use)
-    └── test_smoke.py       # Smoke tests for basic functionality
+    ├── test_smoke.py       # Smoke tests for basic functionality
+    ├── test_login.py       # Dedicated authentication tests (planned)
+    ├── test_email_compose.py  # Email composition workflows (planned)
+    ├── test_email_search.py   # Email search functionality (planned)
+    ├── test_email_management.py # Email organization workflows (planned)
+    ├── fixtures/           # Shared test utilities (planned)
+    │   └── auth_fixtures.py    # Authentication fixtures and utilities
+    └── page_objects/       # Page object models (for future use)
 ```
 
 ## Development Commands
@@ -83,7 +110,9 @@ pytest tests/test_smoke.py -v -s
 pytest tests/test_smoke.py::test_gmail_page_loads -v -s
 
 # Run tests with specific markers
-pytest -m smoke -v -s
+pytest -m smoke -v -s        # Smoke tests only
+pytest -m login -v -s        # Authentication tests only (when implemented)
+pytest -m email -v -s        # Email workflow tests only (when implemented)
 
 # Generate HTML report (development mode)
 pytest --html=reports/report.html -v -s

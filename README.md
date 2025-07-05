@@ -6,7 +6,23 @@ This comprehensive end-to-end testing framework validates critical Gmail workflo
 
 ## Test Coverage
 
-The automation suite covers the following core email workflows:
+The automation suite uses a **hybrid testing approach** combining dedicated authentication tests with integrated workflow tests for comprehensive coverage.
+
+### Testing Strategy
+
+#### 1. Dedicated Authentication Tests (Planned)
+- **Focused Testing**: Isolate login functionality for precise debugging
+- **Edge Cases**: OAuth2, 2FA, app passwords, invalid credentials, session timeouts
+- **Fast Feedback**: Quick validation without full workflow execution
+- **Benefits**: Clear error isolation, comprehensive authentication coverage
+
+#### 2. Integrated Workflow Tests (Planned)
+- **Real-world Scenarios**: Complete user journeys from login to email operations
+- **Performance Validation**: Login overhead in actual usage patterns
+- **User Experience**: End-to-end validation of realistic user workflows
+- **Benefits**: Real-world testing, performance insights, complete user journey validation
+
+### Core Email Workflows
 
 ### Authentication & Access
 - User login authentication flows
@@ -89,9 +105,28 @@ The test suite is designed to run against Gmail's web interface using Playwright
 ### Running Tests
 
 #### Available Tests
+
+**Current Implementation:**
 - **Smoke Tests**: Basic functionality verification (`tests/test_smoke.py`)
   - Gmail page loading verification
   - Basic element presence checks
+
+**Planned Test Suites:**
+- **Authentication Tests** (`tests/test_login.py`)
+  - Gmail login with valid/invalid credentials
+  - OAuth2 and 2FA authentication flows
+  - App-specific password validation
+  - Session persistence and timeout testing
+
+- **Email Workflow Tests** (Integrated with authentication)
+  - `tests/test_email_compose.py` - Email composition and sending
+  - `tests/test_email_search.py` - Search functionality validation
+  - `tests/test_email_management.py` - Archive, organize, and manage emails
+
+- **Shared Authentication Utilities**
+  - `tests/fixtures/auth_fixtures.py` - Reusable login fixtures
+  - Pre-authenticated page fixtures for workflow tests
+  - Session management utilities
 
 #### Test Execution Commands
 
@@ -108,8 +143,14 @@ pytest tests/test_smoke.py -v -s
 # Run specific test
 pytest tests/test_smoke.py::test_gmail_page_loads -v -s
 
-# Run smoke tests only
+# Run smoke tests only  
 pytest -m smoke -v -s
+
+# Run authentication tests only (when implemented)
+pytest -m login -v -s
+
+# Run email workflow tests only (when implemented)
+pytest -m email -v -s
 
 # Run tests with HTML report
 pytest --html=reports/report.html -v -s
